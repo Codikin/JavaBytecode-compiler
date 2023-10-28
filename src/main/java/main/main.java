@@ -12,7 +12,8 @@ import java.io.IOException;
 
 public class main {
     public static void main(String[] args) throws IOException {
-        FileInputStream file = new FileInputStream("src/test/java/myIntro.java");
+//        FileInputStream file = new FileInputStream("src/test/java/helloworld.java");
+        FileInputStream file = new FileInputStream("src/test/java/whileLoop.java");
         CharStream charStream = CharStreams.fromStream(file);
         MiniJavaLexer lexer = new MiniJavaLexer(charStream);
         MiniJavaParser parser = new MiniJavaParser(new CommonTokenStream(lexer));

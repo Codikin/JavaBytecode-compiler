@@ -1,24 +1,15 @@
 package visitor;
 
-import codegenerator.CodeGenerator;
 import com.antlr.MiniJavaBaseVisitor;
 import com.antlr.MiniJavaParser;
+import segment.CentralStorage;
+import segment.mainClassSegment.mainClassSegment;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class javaVisitor extends MiniJavaBaseVisitor<Void> {
-
-    public Map<String, String> getSymtable() {
-        return symtable;
-    }
-
-    public void setSymtable(Map<String, String> symtable) {
-        this.symtable = symtable;
-    }
-
-    private Map<String, String> symtable = new HashMap<>(); //to store values
-
+    CentralStorage storage = CentralStorage.getInstance();
 
     //below is the psvm program values call
     @Override
@@ -29,11 +20,12 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
     @Override
     public Void visitMainClass(MiniJavaParser.MainClassContext ctx) {
         String className = ctx.IDENTIFIER(0).getText();
-        String argument = ctx.IDENTIFIER(1).getText();
-        String printValue = ctx.statement().expression(0).IDENTIFIER().getText();
-        symtable.put("mainClassName", className);
-        symtable.put("argument", argument);
-        symtable.put("printvalue", printValue);
+        String printValue = ctx.statement(0).expression(0).STRING_LITERAL().getText();
+        CentralStorage storage = CentralStorage.getInstance();
+        mainClassSegment mainClassSegment = new mainClassSegment();
+        storage.setMainClassSegment(mainClassSegment);
+        storage.getMainClassSegment().setMainClassName(className);
+        storage.getMainClassSegment().setPrintValue(printValue);
         return super.visitMainClass(ctx);
     }
 
@@ -71,9 +63,4 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
         return super.visitExpression(ctx);
     }
 
-//    public byte[] getBytecode() {
-//        cw.visitEnd();
-//        return cw.toByteArray();
-//    }
-//    CodeGenerator codeGenerator = new CodeGenerator(symtable);
 }

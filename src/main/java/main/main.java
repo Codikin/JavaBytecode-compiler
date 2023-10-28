@@ -20,7 +20,7 @@ public class main {
 
         javaVisitor visitor = new javaVisitor();
         visitor.visit(tree);
-        CodeGenerator codeGenerator = new CodeGenerator(visitor.getSymtable());
+        CodeGenerator codeGenerator = new CodeGenerator();
         ParseTreeWalker.DEFAULT.walk(codeGenerator, tree);
         System.out.println("Successful");
     }

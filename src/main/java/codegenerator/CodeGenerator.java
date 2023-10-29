@@ -1,6 +1,7 @@
 package codegenerator;
 
 import com.antlr.MiniJavaParser;
+import generator.forLoopSegmentGen;
 import generator.mainMethodSegmentGen;
 import generator.whileLoopSegmentGen;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -107,7 +108,14 @@ public class CodeGenerator extends MiniJavaBaseListener implements Opcodes {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override public void enterForStatement(MiniJavaParser.ForStatementContext ctx) { }
+    @Override public void enterForStatement(MiniJavaParser.ForStatementContext ctx) {
+        String mainclassName = storage.getForLoopSegment().getMainClassName();
+        int localVar1 = storage.getForLoopSegment().getLocalVar1();
+        int statement1initialValue = storage.getForLoopSegment().getStatement1initialValue();
+        int statement2Limit = storage.getForLoopSegment().getStatement2limit();
+        forLoopSegmentGen forloopGenerator = new forLoopSegmentGen();
+        forloopGenerator.generateForLoopBytecode(mainclassName, localVar1, statement1initialValue, statement2Limit);
+    }
     /**
      * {@inheritDoc}
      *

@@ -49,7 +49,7 @@ public class whileLoopSegmentGen {
 
         byte[] bytecode = cw.toByteArray();
 
-        try (FileOutputStream fos = new FileOutputStream(mainClassName + ".class")) {
+        try (FileOutputStream fos = new FileOutputStream("src/test/output/" + mainClassName + ".class")) {
             fos.write(bytecode);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

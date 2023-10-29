@@ -2,6 +2,7 @@ package codegenerator;
 
 import com.antlr.MiniJavaParser;
 import generator.forLoopSegmentGen;
+import generator.ifElseSegmentGen;
 import generator.mainMethodSegmentGen;
 import generator.whileLoopSegmentGen;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -158,6 +159,13 @@ public class CodeGenerator extends MiniJavaBaseListener implements Opcodes {
             int comparativeValue1 = storage.getWhileLoopSegment().getWhileLoopComparativeValue();
             whileLoopSegmentGen whileLoopSegmentGen = new whileLoopSegmentGen();
             whileLoopSegmentGen.generateWhileLoopBytecode(mainClassName, var1value, comparativeValue1);
+        }
+        if (null != ctx.IF() && null != ctx.ELSE()) {
+            String mainClassName = storage.getIfElseSegment().getMainClassName();
+            int var1Value = storage.getIfElseSegment().getVar1Value();
+            int var2Value = storage.getIfElseSegment().getVar2Value();
+            ifElseSegmentGen ifElseSegmentGen = new ifElseSegmentGen();
+            ifElseSegmentGen.generateIfElseBytecode(mainClassName, var1Value, var2Value);
         }
 
     }

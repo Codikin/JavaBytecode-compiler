@@ -1,3 +1,4 @@
 /target/
 /.idea
 /.idea/jarRepositories.xml
+/src/test/output/

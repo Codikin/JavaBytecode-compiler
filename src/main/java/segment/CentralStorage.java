@@ -1,5 +1,6 @@
 package segment;
 import segment.forLoopSegment.forLoopSegment;
+import segment.ifElseSegment.ifElseSegment;
 import segment.localVarSegment.localVarSegment;
 import segment.mainClassSegment.mainClassSegment;
 import segment.whileLoopSegment.whileLoopSegment;
@@ -9,6 +10,16 @@ public class CentralStorage {
     private mainClassSegment mainClassSegment;
     private whileLoopSegment whileLoopSegment;
     private localVarSegment localVarSegment;
+    private forLoopSegment forLoopSegment;
+    private ifElseSegment ifElseSegment;
+
+    public ifElseSegment getIfElseSegment() {
+        return ifElseSegment;
+    }
+
+    public void setIfElseSegment(ifElseSegment ifElseSegment) {
+        this.ifElseSegment = ifElseSegment;
+    }
 
     public segment.forLoopSegment.forLoopSegment getForLoopSegment() {
         return forLoopSegment;
@@ -17,9 +28,6 @@ public class CentralStorage {
     public void setForLoopSegment(segment.forLoopSegment.forLoopSegment forLoopSegment) {
         this.forLoopSegment = forLoopSegment;
     }
-
-    private forLoopSegment forLoopSegment;
-
     public localVarSegment getLocalVarSegment() {
         return localVarSegment;
     }

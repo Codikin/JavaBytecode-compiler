@@ -4,6 +4,7 @@ import com.antlr.MiniJavaBaseVisitor;
 import com.antlr.MiniJavaParser;
 import segment.CentralStorage;
 import segment.forLoopSegment.forLoopSegment;
+import segment.ifElseSegment.ifElseSegment;
 import segment.localVarSegment.localVarSegment;
 import segment.mainClassSegment.mainClassSegment;
 import segment.whileLoopSegment.whileLoopSegment;
@@ -17,6 +18,7 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
     whileLoopSegment whileLoopSegment = new whileLoopSegment();
     localVarSegment localVarSegment = new localVarSegment();
     forLoopSegment forLoopSegment = new forLoopSegment();
+    ifElseSegment ifElseSegment = new ifElseSegment();
 
 
     //below is the psvm program values call
@@ -25,6 +27,7 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
         storage.setWhileLoopSegment(whileLoopSegment);
         storage.setLocalVarSegment(localVarSegment);
         storage.setForLoopSegment(forLoopSegment);
+        storage.setIfElseSegment(ifElseSegment);
         return super.visitProgram(ctx);
     }
 
@@ -79,6 +82,12 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
         }
         if (null != ctx.forStatement()) {
             visitForStatement(ctx.forStatement());
+        }
+        if (null != ctx.IF() && null != ctx.ELSE()) {
+            // if & else conditons are written in generationFile. Will add support for custom lines later.
+            storage.getIfElseSegment().setMainClassName(storage.getMainClassSegment().getMainClassName());
+            storage.getIfElseSegment().setVar1Value(storage.getLocalVarSegment().getNumber1());
+            storage.getIfElseSegment().setVar2Value(storage.getLocalVarSegment().getNumber2());
         }
 //        return super.visitStatement(ctx);
         return super.visitStatement(ctx);

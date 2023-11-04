@@ -1,10 +1,7 @@
 package codegenerator;
 
 import com.antlr.MiniJavaParser;
-import generator.forLoopSegmentGen;
-import generator.ifElseSegmentGen;
-import generator.mainMethodSegmentGen;
-import generator.whileLoopSegmentGen;
+import generator.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -13,6 +10,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import com.antlr.MiniJavaBaseListener;
 import segment.CentralStorage;
+
+import java.util.List;
 
 
 public class CodeGenerator extends MiniJavaBaseListener implements Opcodes {
@@ -166,6 +165,14 @@ public class CodeGenerator extends MiniJavaBaseListener implements Opcodes {
             int var2Value = storage.getIfElseSegment().getVar2Value();
             ifElseSegmentGen ifElseSegmentGen = new ifElseSegmentGen();
             ifElseSegmentGen.generateIfElseBytecode(mainClassName, var1Value, var2Value);
+        }
+        if (null != ctx.varDeclaration()) {
+            if (null != ctx.varDeclaration().arrayInitializer()) {
+                arraySegmentGen arraySegmentGen = new arraySegmentGen();
+                String mainClassName = storage.getMainClassSegment().getMainClassName();
+                List<Integer> arrayElements = storage.getArraySegment().getArrayElements();
+                arraySegmentGen.generateArraySegmentBytecode(mainClassName, arrayElements);
+            }
         }
 
     }

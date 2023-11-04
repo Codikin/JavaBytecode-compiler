@@ -1,4 +1,5 @@
 package segment;
+import segment.arraySegment.arraySegment;
 import segment.forLoopSegment.forLoopSegment;
 import segment.ifElseSegment.ifElseSegment;
 import segment.localVarSegment.localVarSegment;
@@ -12,6 +13,16 @@ public class CentralStorage {
     private localVarSegment localVarSegment;
     private forLoopSegment forLoopSegment;
     private ifElseSegment ifElseSegment;
+
+    public segment.arraySegment.arraySegment getArraySegment() {
+        return arraySegment;
+    }
+
+    public void setArraySegment(segment.arraySegment.arraySegment arraySegment) {
+        this.arraySegment = arraySegment;
+    }
+
+    private arraySegment arraySegment;
 
     public ifElseSegment getIfElseSegment() {
         return ifElseSegment;

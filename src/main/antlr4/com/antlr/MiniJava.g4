@@ -1,17 +1,23 @@
 grammar MiniJava;
 
 
-program : mainClass (classDeclaration)* EOF ;
+program : importStatement* mainClass (classDeclaration)* EOF ;
+
+importStatement : 'import' qualifiedName ';' ;
+
+qualifiedName : IDENTIFIER ('.' IDENTIFIER)* ;
 
 mainClass : 'public'? 'class' IDENTIFIER '{' 'public' 'static' 'void' 'main' '(' 'String' '[' ']' IDENTIFIER ')' '{' (statement)* '}' '}' ;
 
 classDeclaration : 'class' IDENTIFIER ('extends' IDENTIFIER)? '{' (varDeclaration)* (methodDeclaration)* '}' ;
 
-varDeclaration : type IDENTIFIER '=' INTEGER_LITERAL? STRING_LITERAL? ';'  ; // Modified: Added IDENTIFIER and ;
+varDeclaration : type IDENTIFIER ('=' expression | '=' arrayInitializer)? ';' ;
 
 methodDeclaration : 'public' type IDENTIFIER '(' (type IDENTIFIER (',' type IDENTIFIER)*)? ')' '{' (varDeclaration)* (statement)* 'return' expression ';' '}' ;
 
-type : 'int' | '[' ']' | 'boolean' | 'String' | IDENTIFIER ;
+type : 'int' | '[' ']' | 'boolean' | 'String' | IDENTIFIER | 'int' '[' ']' | 'String' '[' ']' ;
+
+arrayInitializer : '{' (expression (',' expression)*)? '}' ;
 
 localVarDeclaration : type IDENTIFIER ('=' expression)? ';'? ;
 
@@ -40,6 +46,8 @@ statement : '{' (statement)* '}'
           | IDENTIFIER '[' expression ']' '=' expression ';'
           | localVarDeclaration
           | forStatement
+          | IDENTIFIER '[' expression ']' '=' expression ';'
+          | varDeclaration
           ;
 
 expression : expression ('&&' | '<' | '+' | '>' | '==') expression
@@ -57,6 +65,9 @@ expression : expression ('&&' | '<' | '+' | '>' | '==') expression
            | '!' expression
            | '(' expression ')'
            | THIS
+           | 'new' type '[' expression ']'
+           | expression '[' expression ']'
+           | IDENTIFIER '.' IDENTIFIER '(' (expression (',' expression)*)? ')'
            ;
 
 // Lexer Rules

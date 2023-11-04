@@ -3,22 +3,24 @@ package visitor;
 import com.antlr.MiniJavaBaseVisitor;
 import com.antlr.MiniJavaParser;
 import segment.CentralStorage;
+import segment.arraySegment.arraySegment;
 import segment.forLoopSegment.forLoopSegment;
 import segment.ifElseSegment.ifElseSegment;
 import segment.localVarSegment.localVarSegment;
 import segment.mainClassSegment.mainClassSegment;
 import segment.whileLoopSegment.whileLoopSegment;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public class javaVisitor extends MiniJavaBaseVisitor<Void> {
     CentralStorage storage = CentralStorage.getInstance();
-    Map<String, Boolean> segmentDecider = new HashMap<>();
     whileLoopSegment whileLoopSegment = new whileLoopSegment();
     localVarSegment localVarSegment = new localVarSegment();
     forLoopSegment forLoopSegment = new forLoopSegment();
     ifElseSegment ifElseSegment = new ifElseSegment();
+    arraySegment arraySegment = new arraySegment();
 
 
     //below is the psvm program values call
@@ -28,6 +30,7 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
         storage.setLocalVarSegment(localVarSegment);
         storage.setForLoopSegment(forLoopSegment);
         storage.setIfElseSegment(ifElseSegment);
+        storage.setArraySegment(arraySegment);
         return super.visitProgram(ctx);
     }
 
@@ -36,9 +39,17 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
         String className = ctx.IDENTIFIER(0).getText();
         mainClassSegment mainClassSegment = new mainClassSegment();
         storage.setMainClassSegment(mainClassSegment);
-        if (!ctx.statement(0).expression().isEmpty()) {
-            String printValue = ctx.statement(0).expression(0).STRING_LITERAL().getText();
-            storage.getMainClassSegment().setPrintValue(printValue);
+        int statementSize = ctx.statement().size();
+        for (int i = 0; i < statementSize; i++) {
+            if (!ctx.statement(i).expression().isEmpty()) {
+                Optional<String> printValueOptional = Optional.ofNullable(ctx.statement(0))
+                        .map(statement -> statement.expression(0))
+                        .map(expression -> expression.STRING_LITERAL())
+                        .map(stringLiteral -> stringLiteral.getText());
+
+                String printValue = printValueOptional.orElse("hi"); // Default to "hi" if null
+                storage.getMainClassSegment().setPrintValue(printValue);
+            }
         }
         storage.getMainClassSegment().setMainClassName(className);
         return super.visitMainClass(ctx);
@@ -46,25 +57,21 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
 
     @Override
     public Void visitClassDeclaration(MiniJavaParser.ClassDeclarationContext ctx) {
-        System.out.println("Visiting class declaration...");
         return super.visitClassDeclaration(ctx);
     }
 
     @Override
     public Void visitVarDeclaration(MiniJavaParser.VarDeclarationContext ctx) {
-        System.out.println("Visiting variable declaration...");
         return super.visitVarDeclaration(ctx);
     }
 
     @Override
     public Void visitMethodDeclaration(MiniJavaParser.MethodDeclarationContext ctx) {
-        System.out.println("Visiting method declaration...");
         return super.visitMethodDeclaration(ctx);
     }
 
     @Override
     public Void visitType(MiniJavaParser.TypeContext ctx){
-        System.out.println("Visiting type declaration");
         return super.visitType(ctx);
     }
 
@@ -89,7 +96,17 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
             storage.getIfElseSegment().setVar1Value(storage.getLocalVarSegment().getNumber1());
             storage.getIfElseSegment().setVar2Value(storage.getLocalVarSegment().getNumber2());
         }
-//        return super.visitStatement(ctx);
+        if (null != ctx.varDeclaration()) {
+            if (null != ctx.varDeclaration().arrayInitializer()) {
+                int elementSize = ctx.varDeclaration().arrayInitializer().expression().size();
+                List<Integer> arrayElements = new LinkedList<>();
+                for (int i = 0; i < elementSize; i++) {
+                    int number = Integer.parseInt(ctx.varDeclaration().arrayInitializer().expression(i).INTEGER_LITERAL().getText());
+                    arrayElements.add(number);
+                }
+                storage.getArraySegment().setArrayElements(arrayElements);
+            }
+        }
         return super.visitStatement(ctx);
     }
 

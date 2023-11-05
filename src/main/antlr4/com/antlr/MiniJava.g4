@@ -15,9 +15,9 @@ varDeclaration : type IDENTIFIER ('=' expression | '=' arrayInitializer)? ';' ;
 
 methodDeclaration : 'public' type IDENTIFIER '(' (type IDENTIFIER (',' type IDENTIFIER)*)? ')' '{' (varDeclaration)* (statement)* 'return' expression ';' '}' ;
 
-type : 'int' | '[' ']' | 'boolean' | 'String' | IDENTIFIER | 'int' '[' ']' | 'String' '[' ']' ;
+type : 'int' | '[' ']' | 'boolean' | 'String' | IDENTIFIER | 'int' '[' ']' | 'String' '[' ']' | 'int' '[' ']' '[' ']' | 'String' '[' ']' '[' ']' ;
 
-arrayInitializer : '{' (expression (',' expression)*)? '}' ;
+arrayInitializer : '{' (expression (',' expression)* | arrayInitializer (',' arrayInitializer)*)? '}' ;
 
 localVarDeclaration : type IDENTIFIER ('=' expression)? ';'? ;
 

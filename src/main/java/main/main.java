@@ -41,7 +41,7 @@ import java.io.IOException;
 
 public class main {
     public static void main(String[] args) throws IOException {
-        processFile("src/test/input/array.java"); // Example call
+        processFile("src/test/input/array2D.java"); // Example call
     }
 
     public static void processFile(String filePath) throws IOException {

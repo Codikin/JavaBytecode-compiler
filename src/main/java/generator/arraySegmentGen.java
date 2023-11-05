@@ -15,7 +15,6 @@ import java.util.List;
 
 public class arraySegmentGen {
     public void generateArraySegmentBytecode(String mainClassName,List<Integer> arrayElements) {
-//        int[] arrayElements = {5, 10, 9, 8, 7};
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
         // Define the class

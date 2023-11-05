@@ -166,15 +166,6 @@ public class CodeGenerator extends MiniJavaBaseListener implements Opcodes {
             ifElseSegmentGen ifElseSegmentGen = new ifElseSegmentGen();
             ifElseSegmentGen.generateIfElseBytecode(mainClassName, var1Value, var2Value);
         }
-        if (null != ctx.varDeclaration()) {
-            if (null != ctx.varDeclaration().arrayInitializer()) {
-                arraySegmentGen arraySegmentGen = new arraySegmentGen();
-                String mainClassName = storage.getMainClassSegment().getMainClassName();
-                List<Integer> arrayElements = storage.getArraySegment().getArrayElements();
-                arraySegmentGen.generateArraySegmentBytecode(mainClassName, arrayElements);
-            }
-        }
-
     }
     /**
      * {@inheritDoc}
@@ -221,4 +212,19 @@ public class CodeGenerator extends MiniJavaBaseListener implements Opcodes {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void visitErrorNode(ErrorNode node) { }
+
+    @Override public void enterArrayInitializer(MiniJavaParser.ArrayInitializerContext ctx) {
+        String mainClassName = storage.getMainClassSegment().getMainClassName();
+        if (storage.getArray2DSegment().getArray2DElements().isEmpty()) {
+           List<Integer> arrayElements = storage.getArraySegment().getArrayElements();
+            arraySegmentGen arraySegmentGen = new arraySegmentGen();
+            arraySegmentGen.generateArraySegmentBytecode(mainClassName, arrayElements);
+        } //1D array
+        List<List<Integer>> array2Delements = storage.getArray2DSegment().getArray2DElements();
+        array2DSegmentGen array2DSegmentGen = new array2DSegmentGen();
+        array2DSegmentGen.generateArray2DSegment(mainClassName, array2Delements);
+
+    }
+
+    @Override public void exitArrayInitializer(MiniJavaParser.ArrayInitializerContext ctx) { }
 }

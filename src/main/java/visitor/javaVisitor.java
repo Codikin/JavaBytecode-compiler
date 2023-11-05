@@ -3,6 +3,7 @@ package visitor;
 import com.antlr.MiniJavaBaseVisitor;
 import com.antlr.MiniJavaParser;
 import segment.CentralStorage;
+import segment.array2DSegment.array2DSegment;
 import segment.arraySegment.arraySegment;
 import segment.forLoopSegment.forLoopSegment;
 import segment.ifElseSegment.ifElseSegment;
@@ -21,16 +22,18 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
     forLoopSegment forLoopSegment = new forLoopSegment();
     ifElseSegment ifElseSegment = new ifElseSegment();
     arraySegment arraySegment = new arraySegment();
+    array2DSegment array2DSegment = new array2DSegment();
 
 
     //below is the psvm program values call
     @Override
-    public Void visitProgram(MiniJavaParser.ProgramContext ctx){
+    public Void visitProgram(MiniJavaParser.ProgramContext ctx) {
         storage.setWhileLoopSegment(whileLoopSegment);
         storage.setLocalVarSegment(localVarSegment);
         storage.setForLoopSegment(forLoopSegment);
         storage.setIfElseSegment(ifElseSegment);
         storage.setArraySegment(arraySegment);
+        storage.setArray2DSegment(array2DSegment);
         return super.visitProgram(ctx);
     }
 
@@ -46,7 +49,6 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
                         .map(statement -> statement.expression(0))
                         .map(expression -> expression.STRING_LITERAL())
                         .map(stringLiteral -> stringLiteral.getText());
-
                 String printValue = printValueOptional.orElse("hi"); // Default to "hi" if null
                 storage.getMainClassSegment().setPrintValue(printValue);
             }
@@ -96,17 +98,6 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
             storage.getIfElseSegment().setVar1Value(storage.getLocalVarSegment().getNumber1());
             storage.getIfElseSegment().setVar2Value(storage.getLocalVarSegment().getNumber2());
         }
-        if (null != ctx.varDeclaration()) {
-            if (null != ctx.varDeclaration().arrayInitializer()) {
-                int elementSize = ctx.varDeclaration().arrayInitializer().expression().size();
-                List<Integer> arrayElements = new LinkedList<>();
-                for (int i = 0; i < elementSize; i++) {
-                    int number = Integer.parseInt(ctx.varDeclaration().arrayInitializer().expression(i).INTEGER_LITERAL().getText());
-                    arrayElements.add(number);
-                }
-                storage.getArraySegment().setArrayElements(arrayElements);
-            }
-        }
         return super.visitStatement(ctx);
     }
 
@@ -142,6 +133,32 @@ public class javaVisitor extends MiniJavaBaseVisitor<Void> {
     @Override
     public Void visitExpression(MiniJavaParser.ExpressionContext ctx){
         return super.visitExpression(ctx);
+    }
+
+    @Override
+    public Void visitArrayInitializer(MiniJavaParser.ArrayInitializerContext ctx) {
+        List<Integer> arrayElements = new LinkedList<>();
+        List<List<Integer>> array2DElements = new LinkedList<>();
+        if (!ctx.expression().isEmpty()) {
+            for (int i = 0; i < ctx.expression().size(); i++) {
+                int number = Integer.parseInt(ctx.expression(i).INTEGER_LITERAL().getText());
+                arrayElements.add(number);
+            }
+            storage.getArraySegment().setArrayElements(arrayElements); //1D array
+        }
+
+        int array2Dsize = ctx.arrayInitializer().size(); //is 0 if 1D array
+        for (int i = 0; i < array2Dsize ; i++) {
+            int elementSize = ctx.arrayInitializer(i).expression().size();
+            for (int j = 0; j < elementSize; j++) {
+                int number = Integer.parseInt(ctx.arrayInitializer(i).expression(j).INTEGER_LITERAL().getText());
+                arrayElements.add(number);
+            }
+            array2DElements.add(arrayElements);
+            arrayElements = new LinkedList<>();
+        }
+        storage.getArray2DSegment().setArray2DElements(array2DElements);
+        return null;
     }
 
     @Override
